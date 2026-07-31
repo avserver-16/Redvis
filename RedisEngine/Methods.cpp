@@ -52,6 +52,71 @@ public:
     }
 };
 
+// class LFU : public IEvictionPolicy
+{
+private:
+    list<string> usageOrder;
+    unordered_map<string, list<string>::iterator> position;
+
+public:
+    void onGet(const string &key) override
+    {
+        auto it = position.find(key);
+
+        if (it == position.end())
+            return;
+        usageOrder.erase(it->second);
+        usageOrder.push_back(key);
+        position[key] = usageOrder.end();
+    }
+    void onPut(const string &key) override
+    {
+        if (position.find(key) != position.end())
+        {
+            onGet(key);
+            return;
+        }
+        usageOrder.push_front(key);
+        position[key] = usageOrder.begin();
+    }
+    string evict() override
+    {
+        string popper = usageOrder.front();
+        usageOrder.pop_front();
+        position.erase(popper);
+        return popper;
+    }
+};
+
+class FIFO : public IEvictionPolicy
+{
+private:
+    list<string> usageOrder;
+    unordered_map<string, list<string>::iterator> position;
+
+public:
+    void onGet(const string &key) override
+    {
+        return;
+    }
+    void onPut(const string &key) override
+    {
+        if (position.find(key) != position.end())
+        {
+            return;
+        }
+        usageOrder.push_back(key);
+        position[key] = prev(usageOrder.end());
+    }
+    string evict() override
+    {
+        string popper = usageOrder.front();
+        usageOrder.pop_front();
+        position.erase(popper);
+        return popper;
+    }
+};
+
 class Cache
 {
 private:
