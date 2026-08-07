@@ -35,11 +35,34 @@ export default function CacheVisualizer() {
   return (
     <div
       style={{
-        padding: 24,
+        minHeight: "100vh",
+        width: "100%",
+        // padding: "24px",
         fontFamily: "sans-serif",
-      }}
-    >
-      <h1>Cache Engine Visualizer</h1>
+        // color: "#fff",
+        boxSizing: "border-box",
+        margin: 0,
+        background: `
+        radial-gradient(circle at 15% 15%, rgba(229, 9, 20, 0.55) 0%, rgba(229, 9, 20, 0) 45%),
+        radial-gradient(circle at 85% 20%, rgba(180, 0, 0, 0.25) 0%, rgba(180, 0, 0, 0) 40%),
+        linear-gradient(160deg, #1a0000 0%, #0d0000 45%, #050505 75%, #000000 100%)
+      `,
+
+        // Add these here
+        backgroundAttachment: "fixed",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+      }}  >
+      <h1
+        style={{
+          marginBottom: "24px",
+          fontSize: "2.5rem",
+          fontWeight: "bold",
+          letterSpacing: "1px",
+        }}
+      >
+        Cache Engine Visualizer
+      </h1>
 
       <ControlPanel
         currentPolicy={policy}
@@ -69,11 +92,10 @@ export default function CacheVisualizer() {
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: 20,
+          marginTop: "24px",
         }}
       >
-        <KVStore
-          kvStore={cacheData?.kvStore ?? {}}
-        />
+        <KVStore kvStore={cacheData?.kvStore ?? {}} />
 
         <PolicyViewer
           policy={policy}
